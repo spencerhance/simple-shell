@@ -6,8 +6,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-// Constant for now to avoid using realloc
-const int buffer_size = 80;
+// Size of the input buffer, defaults to 80
+size_t buffer_size = 80;
 
 // Child pid for signal handler
 // We are keeping track of this so the child process can be killed if
@@ -124,9 +124,10 @@ char* readLine()
 {
     // Allocate buffer
     char *buffer = malloc(sizeof(char) * buffer_size);
-    size_t line_size;
-
-    ssize_t temp = getline(&buffer, &line_size, stdin);
+    
+    // Read line
+    // Buffer will be realloc'd if necessary by getline
+    ssize_t num_characters_read = getline(&buffer, &buffer_size, stdin);
 
     return buffer;
 }
